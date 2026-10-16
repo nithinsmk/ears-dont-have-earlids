@@ -29,12 +29,16 @@ git push -u origin main
 
 echo "4/4  Turning on GitHub Pages"
 gh api -X POST "repos/$REPO/pages" -f "source[branch]=main" -f "source[path]=/" >/dev/null 2>&1 || echo "     (Pages was already on)"
-echo "     Waiting for the site to go live..."
+echo "     Waiting for GitHub to serve this build..."
+LIVE=$(mktemp)
 for i in $(seq 1 40); do
-  if [ "$(curl -s -o /dev/null -w '%{http_code}' "$URL")" = "200" ]; then
+  curl -s "$URL?v=$(date +%s)" -o "$LIVE"
+  if cmp -s "$LIVE" index.html; then
+    rm -f "$LIVE"
     echo "Live: $URL"
     exit 0
   fi
   sleep 6
 done
+rm -f "$LIVE"
 echo "Pushed, but GitHub hasn't finished yet. It can take a few minutes: $URL"
