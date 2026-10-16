@@ -53,11 +53,17 @@ function render(md) {
     if (/^Website:/i.test(block)) continue; // the PDF's link-and-password line
     if (block.trim() === "+++") { out.push('<hr class="page">'); continue; }
 
-    // iA Writer content block: /image.jpg "Caption"
-    const image = block.trim().match(/^\/(\S+\.(?:jpe?g|png|gif|webp))(?:\s+"(.*)")?$/i);
-    if (image) {
-      const caption = image[2] ? inline(image[2]) : "";
-      out.push(`<figure class="figure"><img src="${image[1]}" alt="${caption.replace(/<[^>]+>/g, "")}">${caption ? `<figcaption>${caption}</figcaption>` : ""}</figure>`);
+    // An image with an optional caption: iA Writer's  /image.jpg "Caption"
+    // or Markdown's  ![alt](url)  with the caption on the next line.
+    const block_ = block.trim();
+    const contentBlock = block_.match(/^\/(\S+\.(?:jpe?g|png|gif|webp))(?:\s+"(.*)")?$/i);
+    const mdImage = block_.match(/^!\[([^\]]*)\]\(([^)\s]+)\) *(?:\n([\s\S]+))?$/);
+    if (contentBlock || mdImage) {
+      const src = contentBlock ? contentBlock[1] : mdImage[2].replace(/^https:\/\/nithinsmk\.github\.io\/ears-dont-have-earlids\//, "");
+      const text = contentBlock ? contentBlock[2] : mdImage[3]?.trim().replace(/^\*(.*)\*$/s, "$1");
+      const caption = text ? inline(text) : "";
+      const alt = mdImage?.[1] || caption.replace(/<[^>]+>/g, "");
+      out.push(`<figure class="figure"><img src="${src}" alt="${escape(alt)}">${caption ? `<figcaption>${caption}</figcaption>` : ""}</figure>`);
       continue;
     }
 
