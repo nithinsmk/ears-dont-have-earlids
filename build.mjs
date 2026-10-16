@@ -19,7 +19,6 @@ const PLAYERS = [
   { link: "coldspring.bandcamp.com/track/cut-ups-self-explained", embed: "track=2809731049", label: "Brion Gysin, “Cut-Ups Self-Explained”" },
   { link: "coldspring.bandcamp.com/track/i-am-that-i-am", embed: "track=986190572", label: "Brion Gysin, “I Am That I Am”" },
   { link: "pierreschaeffer.bandcamp.com/album/uvres-1948-1952", embed: "track=3218358149", label: "Pierre Schaeffer, Étude aux chemins de fer" },
-  { link: "williamsburroughs.bandcamp.com/album/nothing-here-now", embed: "album=2214306521", label: "William S. Burroughs, Nothing Here Now But the Recordings" },
 ];
 
 const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
