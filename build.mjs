@@ -53,6 +53,14 @@ function render(md) {
     if (/^Website:/i.test(block)) continue; // the PDF's link-and-password line
     if (block.trim() === "+++") { out.push('<hr class="page">'); continue; }
 
+    // iA Writer content block: /image.jpg "Caption"
+    const image = block.trim().match(/^\/(\S+\.(?:jpe?g|png|gif|webp))(?:\s+"(.*)")?$/i);
+    if (image) {
+      const caption = image[2] ? inline(image[2]) : "";
+      out.push(`<figure class="figure"><img src="${image[1]}" alt="${caption.replace(/<[^>]+>/g, "")}">${caption ? `<figcaption>${caption}</figcaption>` : ""}</figure>`);
+      continue;
+    }
+
     const heading = block.match(/^(#{1,3}) (.*)/);
     if (heading) {
       const [first, ...rest] = block.split("\n");
@@ -103,6 +111,9 @@ a:hover { text-decoration-color: currentColor; }
 .note { color: var(--muted); font-style: italic; }
 .wc { padding-left: 2.5rem; text-indent: -2.5rem; font-size: 1rem; }
 hr.page { border: 0; border-top: 1px solid var(--rule); margin: 3rem 0; }
+.figure { margin: 1.5rem 0 2rem; }
+.figure img { display: block; width: 100%; height: auto; }
+.figure figcaption { margin-top: .5rem; font-size: .9rem; line-height: 1.5; color: var(--muted); }
 .player { margin: 1.5rem 0 2rem; }
 .player iframe { display: block; border: 0; width: 100%; height: 120px; }
 @media print { .player { display: none; } body { background: #fff; } }
