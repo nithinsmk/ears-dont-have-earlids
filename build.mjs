@@ -50,7 +50,7 @@ function render(md) {
   let inWorksCited = false;
 
   for (const block of blocks) {
-    if (/^Website:/i.test(block)) continue; // the PDF's link-and-password line
+    if (/^(Website|Web version)\b/i.test(block)) continue; // the PDF's link-and-password line
     if (block.trim() === "+++") { out.push('<hr class="page">'); continue; }
 
     // An image with an optional caption: iA Writer's  /image.jpg "Caption"
@@ -74,7 +74,9 @@ function render(md) {
       const text = first.replace(/^#+ /, "").trim();
       inWorksCited = level === 2 && /works cited/i.test(text);
       out.push(`<h${level}>${inline(text)}</h${level}>`);
-      if (rest.length) out.push(`<p class="sub">${inline(rest.join(" ").trim())}</p>`);
+      // Under the title, a line like "Total length 15:35" is a subtitle;
+      // under a section heading, text with no blank line is just the first paragraph.
+      if (rest.length) out.push(`<p${level === 1 ? ' class="sub"' : ""}>${inline(rest.join(" ").trim())}</p>`);
       continue;
     }
 
