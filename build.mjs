@@ -88,7 +88,8 @@ function render(md) {
 
     let html = inline(block.replace(/\\\n/g, "\n").replace(/\n/g, " "));
     let cls = "";
-    if (inWorksCited) { cls = "wc"; html = autolink(html); }
+    if (inWorksCited && /^\*[^*].*\*$/s.test(block.trim())) cls = "endnote"; // the closing note after Works Cited
+    else if (inWorksCited) { cls = "wc"; html = autolink(html); }
     else if (/^\[[^\]]*\]$/.test(block.trim())) cls = "note";
     out.push(cls ? `<p class="${cls}">${html}</p>` : `<p>${html}</p>`);
 
@@ -118,6 +119,7 @@ a { color: var(--link); text-decoration-color: var(--muted); text-underline-offs
 a:hover { text-decoration-color: currentColor; }
 .note { color: var(--muted); font-style: italic; }
 .wc { padding-left: 2.5rem; text-indent: -2.5rem; font-size: 1rem; }
+.endnote { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: .95rem; color: var(--muted); }
 hr.page { border: 0; border-top: 1px solid var(--rule); margin: 3rem 0; }
 .figure { margin: 1.5rem 0 2rem; }
 .figure img { display: block; width: 100%; height: auto; }
